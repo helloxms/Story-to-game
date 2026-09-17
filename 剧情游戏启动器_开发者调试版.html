@@ -3692,6 +3692,7 @@
           <button class="text-btn primary" id="importBtn">插入 JSON</button>
           <button class="text-btn" id="libraryBtn">选择本地资料库</button>
           <button class="text-btn" id="sampleBtn">示例作品</button>
+          <button class="text-btn" id="sampleAdultDayBtn" title="成人日">示例作品2</button>
           <button class="text-btn" id="launcherDeveloperBtn">开发者介绍</button>
           <div class="mode-switch" data-color-switch aria-label="明暗模式">
             <button type="button" data-color-mode-choice="light">浅</button>
@@ -4047,6 +4048,7 @@
       importBtn: document.getElementById("importBtn"),
       libraryBtn: document.getElementById("libraryBtn"),
       sampleBtn: document.getElementById("sampleBtn"),
+      sampleAdultDayBtn: document.getElementById("sampleAdultDayBtn"),
       clearCacheBtn: document.getElementById("clearCacheBtn"),
       cacheList: document.getElementById("cacheList"),
       launcherTitle: document.getElementById("launcherTitle"),
@@ -4175,6 +4177,47 @@
           throw new Error(`节点 ${id} 没有可播放内容、选项、跳转或路由。`);
         }
       }
+    }
+
+    const ADULT_DAY_JSON = "测试案例-成人日.json";
+    const ADULT_DAY_SCRIPT = "sample-成人日.js";
+
+    function loadAdultDaySample() {
+      if (el.sampleAdultDayBtn.disabled) return;
+      el.sampleAdultDayBtn.disabled = true;
+      loadAdultDayStory().then(story => {
+        loadStory(deepClone(story), { animate: true, cache: true });
+      }).catch(error => {
+        console.error("加载《成人日》失败", error);
+        showToast("无法加载《成人日》", `请把 ${ADULT_DAY_JSON} 放在启动器同一目录，或改用「插入 JSON」。`);
+      }).finally(() => {
+        el.sampleAdultDayBtn.disabled = false;
+      });
+    }
+
+    function loadAdultDayStory() {
+      return fetchAdultDayStory().catch(() => loadAdultDayFallbackScript());
+    }
+
+    function fetchAdultDayStory() {
+      return fetch(encodeURI(ADULT_DAY_JSON), { cache: "no-store" }).then(response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      });
+    }
+
+    function loadAdultDayFallbackScript() {
+      if (window.SAMPLE_STORY_ADULT) return Promise.resolve(window.SAMPLE_STORY_ADULT);
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = encodeURI(ADULT_DAY_SCRIPT);
+        script.onload = () => {
+          if (window.SAMPLE_STORY_ADULT) resolve(window.SAMPLE_STORY_ADULT);
+          else reject(new Error("示例脚本没有剧本数据"));
+        };
+        script.onerror = () => reject(new Error("示例脚本加载失败"));
+        document.head.appendChild(script);
+      });
     }
 
     function loadStory(json, options = {}) {
@@ -7174,6 +7217,9 @@
 
     el.sampleBtn.addEventListener("click", () => {
       loadStory(deepClone(SAMPLE_STORY), { animate: true, cache: true });
+    });
+    el.sampleAdultDayBtn.addEventListener("click", () => {
+      loadAdultDaySample();
     });
     if (!canUseLocalLibrary()) {
       el.libraryBtn.disabled = true;

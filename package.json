@@ -1,0 +1,8 @@
+{
+  "name": "story-to-game",
+  "private": true,
+  "description": "分支剧情游戏启动器的局域网 Web 服务",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
