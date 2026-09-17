@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>分支剧情游戏启动器 · 开发者调试版</title>
+  <title>分支剧情游戏播放器 · 开发者调试版</title>
   <style>
     :root {
       color-scheme: dark;
@@ -3682,7 +3682,7 @@
           <div class="tape-slot"></div>
         </div>
         <div class="brand">
-          <h1 id="launcherTitle">分支剧情启动器</h1>
+          <h1 id="launcherTitle">分支剧情播放器</h1>
           <p id="launcherCopy">插入 JSON 剧本，或从本地目录继续。这里保留作品、记录与可继续阅读的进度。</p>
           <div class="maker-credit">Powered By: @山音</div>
         </div>
@@ -4189,7 +4189,7 @@
         loadStory(deepClone(story), { animate: true, cache: true });
       }).catch(error => {
         console.error("加载《成人日》失败", error);
-        showToast("无法加载《成人日》", `请把 ${ADULT_DAY_JSON} 放在启动器同一目录，或改用「插入 JSON」。`);
+        showToast("无法加载《成人日》", `请把 ${ADULT_DAY_JSON} 放在播放器同一目录，或改用「插入 JSON」。`);
       }).finally(() => {
         el.sampleAdultDayBtn.disabled = false;
       });
@@ -6212,7 +6212,7 @@
       el.body.dataset.home = "library";
       applyTheme("neutral");
       applyAmbient("none");
-      el.launcherTitle.textContent = "分支剧情启动器";
+      el.launcherTitle.textContent = "分支剧情播放器";
       el.launcherCopy.textContent = "选择本地资料库或插入一个 JSON 剧本。每部作品会生成独立首页、记录与可继续阅读的进度。";
       el.loadedTitle.textContent = "未载入";
         el.loadedMeta.textContent = "";

@@ -1,13 +1,13 @@
 # Story-to-Game
 
-从小说/剧本生成可玩的分支文游 JSON，并用单文件 HTML 启动器运行。没有 npm、bundler、测试框架或后端。
+从小说/剧本生成可玩的分支文游 JSON，并用单文件 HTML 播放器运行。没有 npm、bundler、测试框架或后端。
 
 ## 仓库地图
 
 | 文件 | 作用 |
 | --- | --- |
-| `剧情游戏启动器_开发者调试版.html` | 启动器本体：CSS + DOM + vanilla JS，用浏览器直接打开 |
-| `JSON剧本规则文档.md` | **当前启动器的 JSON 规范**（写作/改格式以它为准） |
+| `剧情游戏启动器_开发者调试版.html` | 播放器本体：CSS + DOM + vanilla JS，用浏览器直接打开 |
+| `JSON剧本规则文档.md` | **当前播放器的 JSON 规范**（写作/改格式以它为准） |
 | `测试案例-成人日.json` | 完整示例剧本 |
 | `story-to-game.skill` | AI 改编技能包（zip）。内含 `SKILL.md`、`references/`、`scripts/validate.py` |
 | `README.md` | 产品说明；其中的目录树是旧包装，仓库里没有解压后的 `story-to-game/`，也没有 `剧情游戏启动器.html` |
@@ -23,7 +23,7 @@
 python story-to-game/scripts/validate.py 测试案例-成人日.json
 ```
 
-启动器导入时的校验更弱，只查断链、死路、不可达节点、结局缺 `closing`、缺 `scene`。`validate.py` 才是 13+ 项完整检查。致命错误必须修。
+播放器导入时的校验更弱，只查断链、死路、不可达节点、结局缺 `closing`、缺 `scene`。`validate.py` 才是 13+ 项完整检查。致命错误必须修。
 
 PowerShell 解压技能包：
 
@@ -46,25 +46,25 @@ Expand-Archive -Path story-to-game.skill -DestinationPath .
 ## JSON 铁律
 
 - 顶层：`meta`、`startNodeId`、`nodes`。可选 `variables`、`achievements`。不要写 `subtitle`。
-- 新剧本用 `ambient`，不要写 `theme`。启动器界面只有浅色/深色，`applyTheme()` 会强制 `neutral`；旧稿的 `theme` 只当氛围关键词兼容。
+- 新剧本用 `ambient`，不要写 `theme`。播放器界面只有浅色/深色，`applyTheme()` 会强制 `neutral`；旧稿的 `theme` 只当氛围关键词兼容。
 - `val` 是 0–100 的体验调节器，不要做成「低 val 直接坏结局」。结局用 flag / 路径组合；`routes` 必须有 `default`。
 - 结局节点：`isEnding: true`、`title`、`description`、`closing`。非 `RASH ENDING` / `BAD ENDING` 禁止从选项直跳结局，前面必须有收束节点。
 - 多个选项指向同一 `next` 时，每个选项要有独立 callback 节点（不同 `segments`），不能只改 `changes`。
 - 成就数应多于结局数。`chapterTitle` 只标真正的章节入口。节点 ID 用英文、数字、下划线。正文不要写 HTML。
-- 技能包里的 `references/json-format-spec.md` 仍写 `theme`，与启动器现状不一致；格式冲突以仓库根目录的 `JSON剧本规则文档.md` 为准。
+- 技能包里的 `references/json-format-spec.md` 仍写 `theme`，与播放器现状不一致；格式冲突以仓库根目录的 `JSON剧本规则文档.md` 为准。
 
-## 改启动器时
+## 改播放器时
 
 - 保持单文件、无依赖、`"use strict"`。不要引入框架或拆成多文件构建。
 - 界面文案用中文。不要删作品信息里的 `Powered By: @山音`。
 - 运行时状态在 `state`。每部作品的存档键是 `branch_story_${slug(title)}`。剧本缓存走 IndexedDB（`branch_story_cache_db` / `stories`），旧的 `localStorage.branch_story_cache` 会迁移。
 - 资料库依赖 File System Access API，非 Chromium 浏览器只能「插入 JSON」。
-- 改完后用浏览器打开启动器，导入 `测试案例-成人日.json`，至少走：插入 → 开始/继续 → 选项 → 回退 → 存档 → 结局 → DEV 跳转。再点一次「示例作品」，确认内置样例没坏。
+- 改完后用浏览器打开播放器，导入 `测试案例-成人日.json`，至少走：插入 → 开始/继续 → 选项 → 回退 → 存档 → 结局 → DEV 跳转。再点一次「示例作品」，确认内置样例没坏。
 - 样例剧本是 HTML 里的 `SAMPLE_STORY`。改规范时同步更新它和 `JSON剧本规则文档.md`。
 
 ## 常见坑
 
-- README / 技能包规范 / 根目录规范三者会打架：以启动器实际行为和 `JSON剧本规则文档.md` 为准。
+- README / 技能包规范 / 根目录规范三者会打架：以播放器实际行为和 `JSON剧本规则文档.md` 为准。
 - `set` 是直接赋值，不做加减。数值增减用 `val` / `valSet`。
 - `scene.id` 相同才不重复播转场；`type: "transient"`（以及 `passing` / `brief` / `minor`）不播大场景卡。
 - 存档、成就、结局记录在浏览器本地；清缓存会丢。
